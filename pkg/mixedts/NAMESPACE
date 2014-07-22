@@ -1,0 +1,20 @@
+##importFrom("...", "...", ...)
+# Use for importing method from other packages
+
+# exportClasses("...", ...)
+# Export Classes if we decide to build the package using S4 language
+
+# exportMethods("")
+
+
+#export(...)
+## functions that we want to be available for the user.  
+## The remains are used only internally and documentation are not necessary  
+## 
+
+export(dMixedTS)
+export(pMixedTS)
+export(qMixedTS)
+export(rMixedTS)
+export(mle.MixedTS)
+export(MinDist.MixedTS)
