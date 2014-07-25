@@ -1,3 +1,58 @@
+MinDist.VG<-function(dataset,param0,N=50,MixingDens="Gamma"){
+#   # The qmle function works in a similar way of the mle function
+#   
+  env<-new.env()
+  env$MixingDens<-MixingDens
+  env$data<-dataset
+  env$N<-N
+  
+  MinDis.VG<-function(par,dataset,N){
+    mu0<-par[1]
+    mu<-par[2]
+    sig<-par[3]
+    a<-par[4]
+    alpha<-2
+    lambda_p<-1
+    lambda_m<-1
+    # #     dens<-na.omit(dMixedTS(env$data,mu0,
+    # #                            mu,sig,a,alpha,lambda_p,lambda_m))
+    # #     #     dens[is.na(dens)]<-1 # in this way we remove 
+    #     
+    cond<-is.finite(dataset)
+    sol<-hist(as.numeric(dataset[cond]),nclass=N,plot = FALSE)
+    xstep<-sol$mids
+    densEmp<-sol$density
+    densTheo<-dMixedTS(xstep,mu0,
+                       mu,sig,a,alpha,lambda_p,lambda_m)
+    cond2<-is.finite(densTheo)
+    
+    sum((densEmp[cond2]-densTheo[cond2])^2)
+    #     #     dens[is.na(dens)]<-1 # in this way we remove 
+    #     -sum(log(dens)[is.finite(log(dens))])   
+    
+  }
+  if(MixingDens=="Gamma"){
+    #  ui<-rbind(c(1, -1, 0, 0),c(1, 1, 0, 0),c(1, 0, 0, 0),c(0, 0, 1, 0))
+    #   mu0,mu,sig,a,alpha,lambda_p,lambda_m
+    ui<-rbind(c(0, 0, 1, 0 ),
+              c(0, 0, 0, 1))
+    ci<-c(10^(-6), 10^(-6))
+    #  ci<-c(0,0,0,10^(-6))
+    # We have to insert the parameters restrictions considered in the paper    
+  }
+  
+  lengpar<-length(param0)
+  paramLev<-NA*c(1:length(lengpar))
+#   
+  env$lengpar<-lengpar
+  firs.prob<-tryCatch(constrOptim(theta=param0,
+                                  f=MinDis.VG,grad=NULL,ui=ui,ci=ci,dataset=dataset,N=N),
+                      error=function(theta){NULL})
+  return(firs.prob)
+#   
+ }
+
+
 MinDist.MixedTS<-function(data,param0, method="BFGS", fixed.param=NULL,
          lower.param=NULL,
          upper.param=NULL,
@@ -8,6 +63,9 @@ MinDist.MixedTS<-function(data,param0, method="BFGS", fixed.param=NULL,
   env$MixingDens<-MixingDens
   env$data<-data
   env$N<-N
+  env$cond<-is.finite(env$data)
+  env$sol<-hist(as.numeric(env$data[env$cond]),nclass=env$N,plot = FALSE)
+  
   if(MixingDens=="Gamma"){
     #  ui<-rbind(c(1, -1, 0, 0),c(1, 1, 0, 0),c(1, 0, 0, 0),c(0, 0, 1, 0))
     #   mu0,mu,sig,a,alpha,lambda_p,lambda_m
@@ -101,15 +159,13 @@ MinDis<-function(par,env){
   # #                            mu,sig,a,alpha,lambda_p,lambda_m))
   # #     #     dens[is.na(dens)]<-1 # in this way we remove 
   #     
-  cond<-is.finite(env$data)
-  sol<-hist(as.numeric(env$data[cond]),nclass=65,plot = FALSE)
-    xstep<-sol$mids
-  densEmp<-sol$density
-    densTheo<-dMixedTS(xstep,mu0,
-                             mu,sig,a,alpha,lambda_p,lambda_m)
-    cond2<-is.finite(densTheo)
+  #  xstep<-env$sol$mids
+#  densEmp<-env$sol$density
+    densTheo<-dMixedTS(env$sol$mids,mu0,
+                             mu,sig,a,alpha,lambda_p,lambda_m,N=2^7)
+#    cond2<-is.finite(densTheo)
   
-  mean((densEmp[cond2]-densTheo[cond2])^2)
+  sum((env$sol$density[is.finite(densTheo)]-densTheo[is.finite(densTheo)])^2)
   #     #     dens[is.na(dens)]<-1 # in this way we remove 
   #     -sum(log(dens)[is.finite(log(dens))])   
   
