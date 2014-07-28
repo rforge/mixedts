@@ -8,7 +8,7 @@
 %%  ~~ A concise (1-5 ines) description of what the function does. ~~
 }
 \usage{
-mle.MixedTS(data, param0, method = "BFGS", fixed.param, 
+mle.MixedTS(data, param0, method = "L-BFGS-B", fixed.param, 
             lower.param, upper.param, MixingDens = "Gamma",N=2^7)
 }
 %- maybe also 'usage' for other objects documented here.

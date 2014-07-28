@@ -53,7 +53,7 @@ MinDist.VG<-function(dataset,param0,N=50,MixingDens="Gamma"){
  }
 
 
-MinDist.MixedTS<-function(data,param0, method="BFGS", fixed.param=NULL,
+MinDist.MixedTS<-function(data,param0, method="L-BFGS-B", fixed.param=NULL,
          lower.param=NULL,
          upper.param=NULL,
          MixingDens="Gamma",N=50){
@@ -63,6 +63,15 @@ MinDist.MixedTS<-function(data,param0, method="BFGS", fixed.param=NULL,
   env$MixingDens<-MixingDens
   env$data<-data
   env$N<-N
+  if(!is.null(fixed.param)){
+    if(fixed.param["alpha"]==2){
+      resDisVG<-MinDist.VG(dataset=data,param0=c(param0["mu0"],param0["mu"],
+                                       param0["sig"],param0["a"]),N=N,
+                           MixingDens=MixingDens)
+      return(resDisVG)
+    }
+  }
+  
   env$cond<-is.finite(env$data)
   env$sol<-hist(as.numeric(env$data[env$cond]),nclass=env$N,plot = FALSE)
   
@@ -127,10 +136,11 @@ MinDist.MixedTS<-function(data,param0, method="BFGS", fixed.param=NULL,
   paramLev<-NA*c(1:length(lengpar))
   
   env$lengpar<-lengpar
+  time<-system.time(
   firs.prob<-tryCatch(constrOptim(theta=param0,
-                                  f=MinDis,grad=NULL,ui=ui,ci=ci,env=env),
+                                  f=MinDis,grad=NULL,ui=ui,ci=ci,env=env,method=method),
                       error=function(theta){NULL})
-  
+  )
   if(!is.null(firs.prob)){
     paramLev<-firs.prob$par
     names(paramLev)<-names(param0)
@@ -142,7 +152,7 @@ MinDist.MixedTS<-function(data,param0, method="BFGS", fixed.param=NULL,
   
   
   results<-list(estLevpar=paramLev,
-                MeasureDist=firs.prob$value)
+                MeasureDist=firs.prob$value,time=time)
   
   return(results)
 }

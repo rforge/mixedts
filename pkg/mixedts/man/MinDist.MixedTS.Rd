@@ -7,8 +7,8 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-MinDist.MixedTS(data, param0, method = "BFGS", fixed.param = NULL, lower.param = NULL,  
-                upper.param = NULL, MixingDens = "Gamma", N = 50)
+MinDist.MixedTS(data, param0, method = "L-BFGS-B", fixed.param = NULL, 
+        lower.param = NULL, upper.param = NULL, MixingDens = "Gamma", N = 50)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

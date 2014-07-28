@@ -89,7 +89,7 @@ mle.MixedTS2<-function(data,param0, method="BFGS", fixed.param,
   
   env$lengpar<-lengpar
   firs.prob<-tryCatch(constrOptim(theta=param0,
-                                  f=minusloglik.Lev,grad=NULL,ui=ui,ci=ci,env=env),
+                                  f=minusloglik.MixedTS,grad=NULL,ui=ui,ci=ci,env=env),
                       error=function(theta){NULL})
   
   return(firs.prob)
@@ -132,7 +132,7 @@ mle.MixedTS2<-function(data,param0, method="BFGS", fixed.param,
 
 
 # Main function for estimation of a MixedTS using ML
-mle.MixedTS<-function(data,param0, method="BFGS", fixed.param,
+mle.MixedTS<-function(data,param0, method="L-BFGS-B", fixed.param,
                        lower.param,
                        upper.param,
                        MixingDens="Gamma",N=2^7){
@@ -210,10 +210,11 @@ mle.MixedTS<-function(data,param0, method="BFGS", fixed.param,
   paramMixedTS<-NA*c(1:length(lengpar))
   
   env$lengpar<-lengpar
-  firs.prob<-tryCatch(constrOptim(theta=param0,
-                                  f=minusloglik.Lev,grad=NULL,ui=ui,ci=ci,env=env),
-                      error=function(theta){NULL})
-  
+  time<-system.time(
+    firs.prob<-tryCatch(constrOptim(theta=param0,
+                                    f=minusloglik.MixedTS,grad=NULL,ui=ui,ci=ci,env=env),
+                        error=function(theta){NULL},method=method)
+  )
   if(!is.null(firs.prob)){
     paramMixedTS<-firs.prob$par
     names(paramMixedTS)<-names(param0)
@@ -244,12 +245,12 @@ mle.MixedTS<-function(data,param0, method="BFGS", fixed.param,
   }
   
   results<-list(estpar=paramMixedTS,covErr=covMixedTS,
-                logLik=-firs.prob$value
+                logLik=-firs.prob$value,time=time
                 )
   return(results)
 }
 
-minusloglik.Lev<-function(par,env){
+minusloglik.MixedTS<-function(par,env){
   if(env$MixingDens=="Gamma"){
 #     mu0<-par[1]
 #     mu<-par[2]
@@ -276,7 +277,7 @@ minusloglik.Lev<-function(par,env){
   }
 }
 
-logLik.Lev <- function(params,env){
+logLik.MixedTS <- function(params,env){
   if(env$MixingDens=="Gamma"){
     mu0<-params[1]
     mu<-params[2]
@@ -294,7 +295,7 @@ logLik.Lev <- function(params,env){
 }
 
 MixedTS.hessian<-function (params,env){  
-  hessian<-tryCatch(optimHess(par=params, fn=logLik.Lev,env=env),
+  hessian<-tryCatch(optimHess(par=params, fn=logLik.MixedTS,env=env),
                     error=function(theta){matrix(NA,env$lengpar,env$lengpar)})
   
   cov<--solve(hessian)
