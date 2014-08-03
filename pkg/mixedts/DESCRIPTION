@@ -3,6 +3,7 @@ Type: Package
 Title: Mixed Tempered Stable Distribution
 Version: 1.0.1
 Date: 2014-28-11
+Depends: methods, stats4, MASS
 Author: Lorenzo Mercuri, Edit Rroji
 Maintainer: Lorenzo Mercuri <lorenzo.mercuri@unimi.it>
 Description: This package provides detailed functions for univariate Mixed Tempered Stable distribution distribution with Gamma density. This distribution encompasses, Variance Gamma and Symmetric Geo-Stable as special cases. The package contains routine for mle estimation, for the computation of density, probability, quantile and random numbers

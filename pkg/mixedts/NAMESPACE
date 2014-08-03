@@ -1,20 +1,42 @@
 ##importFrom("...", "...", ...)
 # Use for importing method from other packages
-
+import(methods)
+importFrom(stats4)
+importFrom(MASS)
 # exportClasses("...", ...)
+importFrom("graphics", "plot")
 # Export Classes if we decide to build the package using S4 language
 
+exportClasses("param.MixedTS",
+              "MixedTS",
+              "MixedTS.qmle"
+              )
+ #             "MixedTSClass")
 # exportMethods("")
 
-
+exportMethods(
+    "dMixedTS",
+    "pMixedTS",    
+    "qMixedTS",
+    "rMixedTS",
+    "plot"
+)
 #export(...)
+
 ## functions that we want to be available for the user.  
 ## The remains are used only internally and documentation are not necessary  
 ## 
 
-export(dMixedTS)
-export(pMixedTS)
-export(qMixedTS)
-export(rMixedTS)
+# Method for parameters
+#export(dMixedTS.aux)
+#export(pMixedTS.aux)
+#export(qMixedTS.aux)
+#export(rMixedTS.aux)
+#export(profile.aux)
+# Method for Estimation
 export(mle.MixedTS)
-export(MinDist.MixedTS)
+#export(MinDist.MixedTS)
+
+#Method for constructing class
+export(setMixedTS.param) # Invisible Constructor
+#export(setMixedTS) # Visible constructor
