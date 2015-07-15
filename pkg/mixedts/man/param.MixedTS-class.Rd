@@ -44,5 +44,6 @@ Objects can be created by calls of the form \code{setMixedTS}.
     \item{qMixedTS}{\code{signature(object = "param.MixedTS")}: Method for computing quantile of MixedTS. See \code{"\link{qMixedTS-methods}"} for more details. }
     \item{rMixedTS}{\code{signature(object = "param.MixedTS")}: Method for computing random numbers of MixedTS. See \code{"\link{rMixedTS-methods}"} for more details. }
     \item{initialize}{\code{signature(object = "param.MixedTS").}}
+    \item{Qparam.MixedTS}{\code{signature(object = "param.MixedTS").}} 
 	 }
 }
