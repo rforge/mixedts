@@ -21,7 +21,7 @@ The conditional distribution of random variable given V=v is a standardized Temp
 setMixedTS.param(mu0 = numeric(), mu = numeric(), 
   sigma = numeric(), a, alpha = numeric(), 
   lambda_p = numeric(), lambda_m = numeric(), 
-  param = numeric(), Mixing = "Gamma", paramMixing = list())
+  param = numeric(), Mixing = "Gamma", paramMixing = list(), Parametrization = "A")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -53,6 +53,17 @@ setMixedTS.param(mu0 = numeric(), mu = numeric(),
   \item{paramMixing}{ a list object. It is an empty list when \code{Mixing="Gamma"}. If \code{Mixing="User"}, it is used to pass the values of the Mixing density parameters defined by the User through slot \code{a}.
 %%     ~~Describe \code{paramMixing} here~~
 }
+  \item{Parametrization}{ a character string. If \code{Parametrization="A"} the default, we use the following definition for MixedTS with gamma density 
+  
+      \code{Y= mu0+ mu*V + sqrt{V}*Z}
+      
+where \code{V} is distributed as a \code{Gamma(a, sigma^2)}. Otherwise if \code{Parametrization="B"} we have:
+
+      \code{Y= mu0+ mu*V + sigma*sqrt{V}*Z}
+  }
+
+where \code{V} is distributed as a \code{Gamma(a, 1)}.
+
 }
 \details{
 For particular choices of the tempering parameters the tails of the MixedTS distribution can be heavy or semi-heavy. In particular if the Mixing density is a Gamma, we get the Variance Gamma (Madan and Seneta 1990) and the symmetric Geo-Stable distribution as special cases.

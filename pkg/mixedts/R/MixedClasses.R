@@ -11,7 +11,8 @@ setClass("param.MixedTS",representation(mu0="numeric",
                                  lambda_m="numeric",
                                  Mixing="character",
                                  paramMixing="list",
-                                 MixingLogMGF="OptionalFunction"
+                                 MixingLogMGF="OptionalFunction",
+                                 Parametrization = "character"
                                  ),
                           prototype(mu0=numeric(),
                                     mu=numeric(),
@@ -21,7 +22,8 @@ setClass("param.MixedTS",representation(mu0="numeric",
                                     lambda_m=numeric(),
                                     Mixing=character(),
                                     paramMixing=list(),
-                                    MixingLogMGF=NULL)
+                                    MixingLogMGF=NULL,
+                                    Parametrization = character())
           )
 # 
 setMethod("initialize", "param.MixedTS",
@@ -35,7 +37,8 @@ setMethod("initialize", "param.MixedTS",
                    lambda_m=numeric(),
                    Mixing=character(),
                    paramMixing=list(),
-                   MixingLogMGF=function(){}
+                   MixingLogMGF=function(){},
+                   Parametrization=character()
                    ){
             .Object@mu0 <- mu0
             .Object@mu <- mu
@@ -47,6 +50,7 @@ setMethod("initialize", "param.MixedTS",
             .Object@Mixing <- Mixing
             .Object@paramMixing <- paramMixing
             .Object@MixingLogMGF<-MixingLogMGF
+            .Object@Parametrization <-Parametrization
             .Object
           }
           )
@@ -61,7 +65,9 @@ setMixedTS.param <-function(mu0=numeric(),
                             lambda_m=numeric(),
                             param=numeric(),
                             Mixing="Gamma",
-                            paramMixing=list()){
+                            paramMixing=list(),
+                            Parametrization="A"
+                            ){
   if(length(param)==0){
     if(sigma<0){
       warning("sigma must be positive")
@@ -108,6 +114,12 @@ setMixedTS.param <-function(mu0=numeric(),
       return(NULL)
       
     }
+    if(Parametrization!="A"){
+      if(Parametrization!="B"){
+        warning("Choose A or B for Paramtrization arg. See Help for the meaning")
+        return(NULL)
+      }
+    }
     res<-new("param.MixedTS",
              mu0=mu0,
              mu=mu,
@@ -118,7 +130,8 @@ setMixedTS.param <-function(mu0=numeric(),
              lambda_m=lambda_m,
              Mixing=Mixing,
              paramMixing=paramMixing,
-             MixingLogMGF=MixingLogMGF)
+             MixingLogMGF=MixingLogMGF,
+             Parametrization=Parametrization)
 #     res@Mixing<-Mixing
 #     res@paramMixing<-paramMixing
 #     res@MixingLogMGF<-MixingLogMGF
@@ -157,7 +170,8 @@ setMixedTS.param <-function(mu0=numeric(),
              lambda_m=param[7],
              Mixing=Mixing,
              paramMixing=paramMixing,
-             MixingLogMGF=MixingLogMGF)
+             MixingLogMGF=MixingLogMGF,
+             Parametrization=Parametrization)
     
   }
 }
@@ -193,7 +207,8 @@ MixedTSClass <- setClass("MixedTS",
                       lambda_m=numeric(),
                       Mixing=character(),
                       paramMixing=list(),
-                      MixingLogMGF=function(){}){
+                      MixingLogMGF=function(){},
+                      Parametrization=character()){
                .Object@Data=Data
                .Object@Mixing=Mixing
                .Object@dens=dens
@@ -210,8 +225,10 @@ MixedTSClass <- setClass("MixedTS",
                .Object@paramMixing <- paramMixing
                .Object@MixingLogMGF<-MixingLogMGF
                .Object@quantile<-quantile
+               .Object@Parametrization<-Parametrization
                .Object
-              }
+              },
+                      
 )
 # 
 # # setMixedTS<-function(param=numeric(),
@@ -390,6 +407,7 @@ setMethod("initialize", "MixedTS.qmle",
                    Mixing=character(),
                    paramMixing=list(),
                    MixingLogMGF=function(){},
+                   Parametrization=character(),
                    coef=numeric(),
                    vcov=matrix(),
                    min=numeric(),

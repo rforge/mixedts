@@ -35,6 +35,7 @@ Objects can be created by calls of the form \code{setMixedTS}.
 %%     ~~Describe \code{paramMixing} here~~
 }
     \item{\code{MixingLogMGF}:}{This slot contains a function that returns the logarithm of mgf for the Mixing density. The function is  built internally using the information contains into the slots \code{a}, \code{paramMixing}. }
+    \item{\code{Parametrization}:}{String that indicates the parametrization used by user for the MixedTS}
   }
 }
 \section{Methods}{

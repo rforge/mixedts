@@ -1,10 +1,11 @@
 ##importFrom("...", "...", ...)
 # Use for importing method from other packages
 import(methods)
-importFrom(stats4)
-importFrom(MASS)
+import(stats)
+import(graphics)
+import(stats4)
+import(MASS)
 # exportClasses("...", ...)
-importFrom("graphics", "plot")
 # Export Classes if we decide to build the package using S4 language
 
 exportClasses("param.MixedTS",

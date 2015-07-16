@@ -1,8 +1,8 @@
 #
-mle.VG<-function(data,param0, N=2^7){
+mle.VG<-function(data,param0, N=2^7, Parametrization){
   minusloglik.VG<-function(data,param0,N){
       f<-dMixedTS.aux(data,param0[1],param0[2],param0[3],param0[4],alpha=2,
-                  lambda_p=1,lambda_m=1,N=N)
+                  lambda_p=1,lambda_m=1,N=N, Parametrization=Parametrization)
       v<-log(pmax(as.numeric(na.omit(f)),10^(-40)))
       v1<-v[!is.infinite(v)]
       return(-sum(v1))
@@ -11,7 +11,8 @@ mle.VG<-function(data,param0, N=2^7){
             c(0, 0, 0, 1))
   ci<-c(10^(-6), 10^(-6))
   firs.prob<-tryCatch(constrOptim(theta=param0,
-                                  f=minusloglik.VG,grad=NULL,ui=ui,ci=ci,data=data,N=N),
+                                  f=minusloglik.VG,grad=NULL,ui=ui,ci=ci,
+                                  data=data,N=N, Parametrization=Parametrization),
                       error=function(theta){NULL})
   
 #   if(!is.null(firs.prob)){
@@ -61,8 +62,10 @@ mle.VG<-function(data,param0, N=2^7){
 #  setSup=NULL,setInf=NULL, ...)
 
 # Main function for estimation of a MixedTS using ML
-mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.param=NULL,
-        lower.param=NULL,upper.param=NULL,setSup=NULL,setInf=NULL,N=2^10){
+mle.MixedTS<-function(object,start=list(),Data=NULL,
+        method="L-BFGS-B", fixed.param=NULL,
+        lower.param=NULL,upper.param=NULL,
+        setSup=NULL,setInf=NULL,N=2^10){
   # The qmle function works in a similar way of the mle function
   call<-match.call()
   if(!is(object,"param.MixedTS")){
@@ -79,14 +82,15 @@ mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.par
   if(length(start)==0){
     if(object@Mixing=="Gamma"){
       param0<-list(mu0=object@mu0,mu=object@mu,sigma=object@sigma,a=object@a,
-                   alpha=object@alpha,lambda_p=object@lambda_p,lambda_m=object@lambda_m)
-      data=Data 
-      param0=param0 
-      MixingDens=object@Mixing
-      MixingLogMGF=NULL
-      paramMixing=NULL
-      MGFdef=NULL
-      
+                   alpha=object@alpha,lambda_p=object@lambda_p,
+                   lambda_m=object@lambda_m)
+      data<-Data 
+      param0<-param0 
+      MixingDens<-object@Mixing
+      MixingLogMGF<-NULL
+      paramMixing<-NULL
+      MGFdef<-NULL
+      Parametrization <- object@Parametrization
     }else{param0<-list(mu0=object@mu0,mu=object@mu,sigma=object@sigma,
                        alpha=object@alpha,lambda_p=object@lambda_p,lambda_m=object@lambda_m)
           data=Data 
@@ -94,7 +98,8 @@ mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.par
           MixingDens=object@Mixing
           MixingLogMGF=object@MixingLogMGF
           paramMixing=object@paramMixing
-          MGFdef=object@a          
+          MGFdef=object@a         
+          Parametrization <- object@Parametrization
     }
   }else{
     if(object@Mixing=="Gamma"){
@@ -106,7 +111,7 @@ mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.par
         MixingLogMGF=object@MixingLogMGF
         paramMixing=object@paramMixing
         MGFdef=object@a
-        
+        Parametrization <- object@Parametrization
         
   }else{
     param0<-start
@@ -116,7 +121,7 @@ mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.par
     MixingLogMGF=object@MixingLogMGF
     paramMixing=object@paramMixing
     MGFdef=object@a
-    
+    Parametrization <- object@Parametrization
   }
   }
   env<-new.env()
@@ -127,6 +132,7 @@ mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.par
   env$MixingDens<-MixingDens
   env$UseMGF<-MixingLogMGF 
   env$MGFdef<-MGFdef
+  env$Parametrization<-Parametrization
   if(length(start)==0){
     if(MixingDens=="User"){
       dummyParm<-as.list(param0)
@@ -137,7 +143,8 @@ mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.par
   if(!is.null(fixed.param)){
     if(fixed.param["alpha"]==2){
       resVG<-mle.VG(data=data,param0=c(param0["mu0"],param0["mu"],
-                                       param0["sig"],param0["a"]),N=N)
+                                       param0["sig"],param0["a"]),N=N,
+                                       Parametrization=Parametrization)
       return(resVG)
     }
   }
@@ -223,7 +230,8 @@ mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.par
 
   time<-system.time(
     firs.prob<-tryCatch(constrOptim(theta=param0,
-                                    f=minusloglik.MixedTS,grad=NULL,ui=ui,ci=ci,env=env),
+                                    f=minusloglik.MixedTS,grad=NULL,ui=ui,
+                                    ci=ci,env=env),
                         error=function(theta){NULL},method=method)
   )
   if(!is.null(firs.prob)){
@@ -265,7 +273,8 @@ mle.MixedTS<-function(object,start=list(),Data=NULL,method="L-BFGS-B", fixed.par
             mu0=object@mu0, mu=object@mu,sigma=object@sigma,a=object@a,
             alpha=object@alpha,lambda_p=object@lambda_p,lambda_m=object@lambda_m,
             Mixing=object@Mixing, MixingLogMGF=object@MixingLogMGF,
-            paramMixing=object@paramMixing, 
+            paramMixing=object@paramMixing,
+            Parametrization=object@Parametrization,
             coef=res$firs.prob$par,
             vcov=res$covErr,
             min=res$firs.prob$value,
@@ -297,13 +306,16 @@ minusloglik.MixedTS<-function(par,env){
     #  return(sum(log(dNIG(env$data,alpha,beta,delta,mu))))
     f<-dMixedTS.aux(env$data,mu0=par[1],mu=par[2],
                     sig=par[3],a=par[4],alpha=par[5],
-                    lambda_p=par[6],lambda_m=par[7], N=env$Npow, setInf=env$setInf, setSup=env$setSup)
+                    lambda_p=par[6],lambda_m=par[7], N=env$Npow, 
+                    setInf=env$setInf, setSup=env$setSup,
+                    Parametrization=env$Parametrization)
     }else{
       if(env$MixingDens=="User"){
         f<-dMixedTS.aux(env$data,mu0=par[1],mu=par[2],
                         sig=par[3],a=env$MGFdef,alpha=par[4],lambda_p=par[5],
                         lambda_m=par[6],MixingDens=env$MixingDens,N=env$Npow,
-                        UseMGF=env$UseMGF, paramMixing=par[7:length(par)])
+                        UseMGF=env$UseMGF, paramMixing=par[7:length(par)],
+                        Parametrization=env$Parametrization)
         
       }
     }
@@ -322,7 +334,9 @@ logLik.MixedTS <- function(params,env){
     lambda_p<-params[6]
     lambda_m<-params[7]
     #  return(sum(log(dNIG(env$data,alpha,beta,delta,mu))))
-      f<-dMixedTS.aux(env$data,mu0,mu,sig,a,alpha,lambda_p,lambda_m,N=env$Npow,setInf=env$setInf,setSup=env$setSup)
+      f<-dMixedTS.aux(env$data,mu0,mu,sig,a,alpha,lambda_p,lambda_m,N=env$Npow,
+                      setInf=env$setInf,setSup=env$setSup, 
+                      Parametrization=env$Parametrization)
 #       v<-log(pmax(as.numeric(na.omit(f)),10^(-40)))
 #       v1<-v[!is.infinite(v)]
 #       return(sum(v1))
@@ -331,7 +345,8 @@ logLik.MixedTS <- function(params,env){
       f<-dMixedTS.aux(env$data,mu0=params[1],mu=params[2],
                       sig=params[3],a=env$MGFdef,alpha=params[4],lambda_p=params[5],
                       lambda_m=params[6],MixingDens=env$MixingDens,N=env$Npow,
-                      UseMGF=env$UseMGF, paramMixing=params[7:length(params)])
+                      UseMGF=env$UseMGF, paramMixing=params[7:length(params)],
+                      Parametrization=env$Parametrization)
       
     }
     
