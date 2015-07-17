@@ -412,8 +412,8 @@ setMethod("initialize", "MixedTS.qmle",
                    vcov=matrix(),
                    min=numeric(),
                    details=list(),
-                   nobs=int(),
-                   method=chr()
+                   nobs=integer(),
+                   method=character()
           ){
             .Object@time=time
             .Object@Data=Data
