@@ -1,8 +1,8 @@
 Package: MixedTS
 Type: Package
 Title: Mixed Tempered Stable Distribution
-Version: 1.0.3
-Date: 2015-07-16
+Version: 1.0.4
+Date: 2015-10-22
 Depends: methods, stats, graphics, stats4, MASS
 Author: Lorenzo Mercuri, Edit Rroji
 Maintainer: Lorenzo Mercuri <lorenzo.mercuri@unimi.it>

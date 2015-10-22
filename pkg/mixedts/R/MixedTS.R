@@ -9,8 +9,8 @@ charact.MTSgam <- function(t,mu0,mu,sig,a,alpha,lambda_p,lambda_m,
       ycgf<-1i*t*mu0-a*log(1-(mu*1i*t-sig^2*t^2/2))
     }
   }else{
-    L_cts<-((lambda_p-1i*t)^alpha-lambda_p^alpha+(lambda_m+1i*t)^alpha-lambda_m^alpha)/(alpha*(alpha-1)*(lambda_p^(alpha-2)+lambda_m^(alpha-2)))
-          +(1i*t*(lambda_p^(alpha-1)-lambda_m^(alpha-1)))/((alpha-1)*(lambda_p^(alpha-2)+lambda_m^(alpha-2)))
+    L_cts<-(((lambda_p-1i*t)^alpha-lambda_p^alpha+(lambda_m+1i*t)^alpha-lambda_m^alpha)/(alpha*(alpha-1)*(lambda_p^(alpha-2)+lambda_m^(alpha-2)))
+          +(1i*t*(lambda_p^(alpha-1)-lambda_m^(alpha-1)))/((alpha-1)*(lambda_p^(alpha-2)+lambda_m^(alpha-2))))
     if(Parametrization=="A"){
     #  L_cts_y<-sig^2*L_cts
       ycgf<-1i*t*mu0-a*log(1-sig^2*(mu*1i*t+L_cts))
@@ -34,8 +34,8 @@ charact.User<-function(t,mu0,mu,sig,
       ySub<-mu*1i*t+sig^2*t^2/2
     }
   }else{
-    L_cts<-((lambda_p-1i*t)^alpha-lambda_p^alpha+(lambda_m+1i*t)^alpha-lambda_m^alpha)/(alpha*(alpha-1)*(lambda_p^(alpha-2)+lambda_m^(alpha-2)))
-    +(1i*t*(lambda_p^(alpha-1)-lambda_m^(alpha-1)))/((alpha-1)*(lambda_p^(alpha-2)+lambda_m^(alpha-2)))
+    L_cts<-(((lambda_p-1i*t)^alpha-lambda_p^alpha+(lambda_m+1i*t)^alpha-lambda_m^alpha)/(alpha*(alpha-1)*(lambda_p^(alpha-2)+lambda_m^(alpha-2)))
+    +(1i*t*(lambda_p^(alpha-1)-lambda_m^(alpha-1)))/((alpha-1)*(lambda_p^(alpha-2)+lambda_m^(alpha-2))))
     if(Parametrization=="A"){
       ySub<-sig^2*(mu*1i*t + L_cts)
     }
