@@ -4,7 +4,7 @@ charact.MTSgam <- function(t,mu0,mu,sig,a,alpha,lambda_p,lambda_m,
   if(alpha==2){
     if(Parametrization=="A"){
       ycgf<-1i*t*mu0-a*log(1-sig^2*(mu*1i*t-t^2/2))
-    } 
+    }
     if(Parametrization=="B"){
       ycgf<-1i*t*mu0-a*log(1-(mu*1i*t-sig^2*t^2/2))
     }
@@ -53,13 +53,13 @@ ChFunToDens.MTSgam <- function(n, alim, blim, mu0, mu, sig, a, alpha,
                                lambda_p,lambda_m, Parametrization) {
   # Internal function for transforming the characteristic function in Density,
   # using fft
-  i <- 0:(n-1)            
-  dx <- (blim-alim)/n     
-  x <- alim + i * dx      
-  dt <- 2*pi / ( n * dx ) 
-  c <- -n/2 * dt          
-  d <-  n/2 * dt          
-  t <- c + i * dt         
+  i <- 0:(n-1)
+  dx <- (blim-alim)/n
+  x <- alim + i * dx
+  dt <- 2*pi / ( n * dx )
+  c <- -n/2 * dt
+  d <-  n/2 * dt
+  t <- c + i * dt
   phi_t <- charact.MTSgam(t,mu0,mu,sig,
                            a,alpha,lambda_p,
                           lambda_m, Parametrization)
@@ -79,13 +79,13 @@ ChFunToDens.User<-function(n,alim,blim,
                  mu0,mu,sig,a,alpha,lambda_p,
                  lambda_m,UseMGF,paramMixing,Parametrization){
 
-  i <- 0:(n-1)            
-  dx <- (blim-alim)/n     
-  x <- alim + i * dx      
-  dt <- 2*pi / ( n * dx ) 
-  c <- -n/2 * dt          
-  d <-  n/2 * dt          
-  t <- c + i * dt         
+  i <- 0:(n-1)
+  dx <- (blim-alim)/n
+  x <- alim + i * dx
+  dt <- 2*pi / ( n * dx )
+  c <- -n/2 * dt
+  d <-  n/2 * dt
+  t <- c + i * dt
   phi_t <- charact.User(t,mu0,mu,sig,
                           a,alpha,lambda_p,lambda_m,UseMGF,paramMixing,
                         Parametrization)
@@ -99,13 +99,13 @@ ChFunToDens.User<-function(n,alim,blim,
     x = x,
     density = Re(density)
   )
-  
+
 }
 
 dMixedTS.aux <- function(x,mu0,mu,sig,a,alpha,lambda_p,lambda_m,setSup=NULL,setInf=NULL,MixingDens="Gamma",N=2^10,
                          UseMGF=NULL, paramMixing=NULL, Parametrization = "A"){
-# Density function of a 
-# Mixed Tempered Stable 
+# Density function of a
+# Mixed Tempered Stable
 # distribution developed in [Rroji and Mercuri 2014]
   if(length(x)==1){
     alim<-min((-abs(x)-0.5),setInf)
@@ -116,8 +116,8 @@ dMixedTS.aux <- function(x,mu0,mu,sig,a,alpha,lambda_p,lambda_m,setSup=NULL,setI
     blim<-max(max(xdummy)+0.1,setSup)
   }
   if(MixingDens=="Gamma"){
-    
-    invFFT<-ChFunToDens.MTSgam(n=N,alim=alim,blim=blim,mu0=mu0,mu=mu,sig=sig,a=a,alpha=alpha,lambda_p=lambda_p,lambda_m=lambda_m, 
+
+    invFFT<-ChFunToDens.MTSgam(n=N,alim=alim,blim=blim,mu0=mu0,mu=mu,sig=sig,a=a,alpha=alpha,lambda_p=lambda_p,lambda_m=lambda_m,
                                Parametrization=Parametrization)
     dens<-approx(invFFT$x,invFFT$density,x)
     return(dens$y)
@@ -127,7 +127,7 @@ dMixedTS.aux <- function(x,mu0,mu,sig,a,alpha,lambda_p,lambda_m,setSup=NULL,setI
                              mu0=mu0,mu=mu,sig=sig,a=a,
                              alpha=alpha,lambda_p=lambda_p,
                              lambda_m=lambda_m,UseMGF=UseMGF,
-                             paramMixing=paramMixing, 
+                             paramMixing=paramMixing,
                              Parametrization=Parametrization)
     dens<-approx(invFFT$x,invFFT$density,x)
     return(dens$y)
@@ -136,17 +136,17 @@ dMixedTS.aux <- function(x,mu0,mu,sig,a,alpha,lambda_p,lambda_m,setSup=NULL,setI
 
 dMixedTS.saddlepoint <- function(x,mu0,mu,sig,a,alpha,
                                  lambda_p,lambda_m,setSup=NULL,
-                                 setInf=NULL,MixingDens="Gamma", 
+                                 setInf=NULL,MixingDens="Gamma",
                                  Parametrization=Parametrization){
-    
-  
+
+
 }
 
 pMixedTS.aux <- function(q,mu0,mu,sig,a,alpha,lambda_p,lambda_m,lower=-Inf,
                      setSup=NULL,setInf=NULL,MixingDens="Gamma",
-                     UseMGF=NULL, paramMixing=NULL,N, 
+                     UseMGF=NULL, paramMixing=NULL,N,
                      Parametrization="A"){
-  
+
   env <- new.env()
   env$mu0 <- mu0
   env$mu <- mu
@@ -162,7 +162,7 @@ pMixedTS.aux <- function(q,mu0,mu,sig,a,alpha,lambda_p,lambda_m,lower=-Inf,
   env$paramMixing<-paramMixing
   env$N<-N
   env$Parametrization<-Parametrization
- # if(MixingDens=="Gamma"){ 
+ # if(MixingDens=="Gamma"){
           myfun<- function(x,env){
             env$mu0 -> mu0
             env$mu -> mu
@@ -183,7 +183,7 @@ pMixedTS.aux <- function(q,mu0,mu,sig,a,alpha,lambda_p,lambda_m,lower=-Inf,
                             alpha=alpha,lambda_p=lambda_p,
                             lambda_m=lambda_m,setSup=setSup,
                             setInf=setInf,MixingDens=MixingDens,
-                            N=N1,UseMGF=UseMGF, 
+                            N=N1,UseMGF=UseMGF,
                             paramMixing=paramMixing,
                             Parametrization=Parametrization)
    }
@@ -206,7 +206,7 @@ pMixedTS.aux <- function(q,mu0,mu,sig,a,alpha,lambda_p,lambda_m,lower=-Inf,
       prob<-approx(point[-1],probpoint,q)
       # we compute the integral between -\infty to lower
 #       Udummy<-seq(0,1,length=2^NPartition)
-#       
+#
 #       ldummy<-diff(Udummy)[1]
 #       stepU<-(Udummy+ldummy/2)
 #       midDummy<-lower-(1-(stepU))/(stepU)
@@ -220,9 +220,9 @@ pMixedTS.aux <- function(q,mu0,mu,sig,a,alpha,lambda_p,lambda_m,lower=-Inf,
       if(approach=="Simpson"){
         warning("We will implement as son as possible!")
         return(NULL)
-      }  
+      }
     }
-  
+
 }
 
 
@@ -232,10 +232,20 @@ pMixedTS.aux <- function(q,mu0,mu,sig,a,alpha,lambda_p,lambda_m,lower=-Inf,
 qMixedTS.aux <- function(p,mu0,mu,sig,a,
                          alpha,lambda_p,lambda_m,
                          setSup=NULL,setInf=NULL,MixingDens="Gamma",
-                         N=N,UseMGF, paramMixing,Parametrization="A",
-                         interval=c(-100,100)){
-  # It is enough to invert the function pMixedTS.aux using the function \texttt{uniroot} 
+                         N=N,UseMGF, paramMixing,Parametrization="A"){
+  #, interval=c(-100,100)){
+  # It is enough to invert the function pMixedTS.aux using the function \texttt{uniroot}
   # of the stats package
+  if(is.null(setSup)){
+    setSup <- 100
+  }
+
+  if(is.null(setInf)){
+    setInf <- -100
+  }
+
+  interval=c(setInf,setSup)
+
   env <- new.env()
   env$mu0 <- mu0
   env$mu <- mu
@@ -275,7 +285,8 @@ qMixedTS.aux <- function(p,mu0,mu,sig,a,
                   N=N1)-prob
   }
   if(length(p)==1){
-    res <-uniroot(f=myObjectFun,interval=interval,prob=p,env=env)$root
+    res <- tryCatch(uniroot(f=myObjectFun,interval=interval,prob=p,env=env)$root,
+                    error=function(p){stop("It is not possible to invert the CDF. Please Increase N for accuracy of computation")})
 #    res <- fsolve(f=myObjectFun,x0=0.1,prob=p,env=env)$x
     return(res)
   }else{
@@ -286,14 +297,20 @@ qMixedTS.aux <- function(p,mu0,mu,sig,a,
     }
     maxres <- uniroot(f=myObjectFun,interval=interval,prob=probmax,env=env)$root
     minres <- uniroot(f=myObjectFun,interval=interval,prob=probmin,env=env)$root
-    stepquant<-seq(minres,maxres,length=2^12)
+    stepquant<-seq(minres,maxres,length=N)
     probabilityTS<-pMixedTS.aux(stepquant,mu0,mu,sig,a,alpha,lambda_p,lambda_m,lower=-Inf,
                          setSup=setSup,setInf=setInf,MixingDens=MixingDens,
                          UseMGF=UseMGF,paramMixing=paramMixing,N=env$N,Parametrization=Parametrization)
     res<-approx(probabilityTS,stepquant,p)
+    if(any(res$x==probmin)){
+      res$y[res$x==probmin] <- minres
+    }
+    if(any(res$x==probmax)){
+      res$y[res$x==probmax] <- maxres
+    }
     return(res$y)
   }
-  
+
 }
 
 # Random Number generetor
@@ -304,11 +321,11 @@ rMixedTS.aux <- function(n,mu0,mu,sig,a,alpha,lambda_p,lambda_m,setSup=NULL,setI
   MixedTSNumber  <- qMixedTS.aux(UniformNumber,mu0,mu,sig,a,
                                  alpha,lambda_p,lambda_m,
                                  setSup=setSup,setInf=setInf,
-                                 MixingDens=MixingDens, 
-                                 Parametrization=Parametrization, 
-                                 interval=c(-100,100),
-                                 UseMGF=UseMGF, 
-                                 paramMixing=paramMixing, 
+                                 MixingDens=MixingDens,
+                                 Parametrization=Parametrization,
+                                 #interval=c(-100,100),
+                                 UseMGF=UseMGF,
+                                 paramMixing=paramMixing,
                                  N=Nstep)
 return(MixedTSNumber)
 }

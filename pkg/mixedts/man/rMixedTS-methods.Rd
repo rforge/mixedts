@@ -5,7 +5,7 @@
 \alias{rMixedTS,param.MixedTS-method}
 \title{ Random number of Mixed Tempered Stable distribution}
 \description{
- This Method returns the quantile of a Mixed Tempered Stable.
+ This Method returns the random number of a Mixed Tempered Stable.
 }
 \section{Methods}{
 \describe{
